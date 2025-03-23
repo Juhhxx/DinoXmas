@@ -17,7 +17,6 @@ public class Trees : MonoBehaviour
     private void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
-        StartCoroutine(DeleteTree());
     }
     private void Update()
     {
@@ -35,10 +34,8 @@ public class Trees : MonoBehaviour
     {
         _gameVelocity = Mathf.Floor(points / 1000) * 10;
     }
-    private IEnumerator DeleteTree()
+    public void DeleteTree()
     {
-        yield return new WaitForSeconds(15f);
-
         _treeGenerator.RemoveTree(this);
         Destroy(gameObject);
     }

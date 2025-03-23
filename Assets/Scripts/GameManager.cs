@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using NaughtyAttributes;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,10 +15,16 @@ public class GameManager : MonoBehaviour
     {
         _treeGenerator.GameOn = true;
     }
+    [Button(enabledMode: EButtonEnableMode.Playmode)]
+    private void BoostScore()
+    {
+        _points += 500;
+        Debug.Log("POINTS UP");
+    }
     private void Update()
     {
         _gameOn = !_dino.IsDead;
-        _points = _dino.Points;
+        _points += _dino.Points;
         _treeGenerator.GameOn = _gameOn;
         _treeGenerator.Points = _points;
         _tmp.text = string.Format("Pts : {0:00000}",_points);

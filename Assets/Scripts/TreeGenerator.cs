@@ -11,10 +11,11 @@ public class TreeGenerator : MonoBehaviour
     public int Points { get; set; }
     private List<Trees> _treeList;
 
-    
 
     private void Start()
     {
+        _treeList = new List<Trees>();
+
         StartCoroutine(GenerateTrees());
     }
     private void Update()
@@ -29,7 +30,15 @@ public class TreeGenerator : MonoBehaviour
     private void UpdateTreeSpeed()
     {
         foreach (Trees tree in _treeList)
-            tree?.SetGameSpeed(Points);
+            tree.SetGameSpeed(Points);
+    }
+    private void CreateTree()
+    {
+        GameObject newTree = Instantiate(_treePrefab, transform.position, Quaternion.identity);
+        Trees tree = newTree.GetComponent<Trees>();
+
+        _treeList.Add(tree);
+        tree.TreeGenerator = this;
     }
     public void RemoveTree(Trees tree)
     {
@@ -41,11 +50,7 @@ public class TreeGenerator : MonoBehaviour
         {
             Debug.Log("SPAWN TREE");
 
-            GameObject newTree = Instantiate(_treePrefab, transform.position, Quaternion.identity);
-            Trees tree = newTree.GetComponent<Trees>();
-
-            _treeList.Add(tree);
-            tree.TreeGenerator = this;
+            CreateTree();
 
             float s = Random.Range(_spawnTime.x,_spawnTime.y);
             Debug.Log($"Next tree in {s}");
