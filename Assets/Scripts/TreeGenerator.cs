@@ -1,26 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using NaughtyAttributes;
+using TMPro;
 
 public class TreeGenerator : MonoBehaviour
 {
     [SerializeField] private GameObject _treePrefab;
-    [SerializeField] private Vector2    _spawnTime;
-
+    [MinMaxSlider(0, 10)][SerializeField] private Vector2Int _spawnDistance;
+    
     public bool GameOn { get; set; }
     public int Points { get; set; }
     private List<Trees> _treeList;
-
+    private System.Random _rnd;
 
     private void Start()
     {
         _treeList = new List<Trees>();
+        _rnd = new System.Random();
 
-        StartCoroutine(GenerateTrees());
+        // StartCoroutine(GenerateTrees());
     }
     private void Update()
     {
         UpdateTreeSpeed();
+        CheckTreeDistance();
         if (!GameOn)
         {
             StopCoroutine(GenerateTrees());
@@ -44,6 +48,25 @@ public class TreeGenerator : MonoBehaviour
     {
         _treeList.Remove(tree);
     }
+    private void CheckTreeDistance()
+    {
+        int dist = _rnd.Next(_spawnDistance.x,_spawnDistance.y);
+
+        Debug.DrawLine(transform.position, transform.right, Color.red);
+
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, -transform.right, dist);
+
+        if (hit)
+        {
+            Trees t = hit.collider.gameObject.GetComponent<Trees>();
+
+            if (!t)
+            {
+                CreateTree();
+            }
+        }
+
+    }
     private IEnumerator GenerateTrees()
     {
         while(true)
@@ -52,7 +75,7 @@ public class TreeGenerator : MonoBehaviour
 
             CreateTree();
 
-            float s = Random.Range(_spawnTime.x,_spawnTime.y);
+            float s = Random.Range(_spawnDistance.x,_spawnDistance.y);
             Debug.Log($"Next tree in {s}");
 
             yield return new WaitForSeconds(s);
